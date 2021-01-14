@@ -1,0 +1,10 @@
+5 5
+1 2 N
+LMLMLMLMM  
+3 3 E
+MMRMMRMrrm    
+3 2 W  
+MMRMMRMRRM  
+2 2 S  
+MMRMMRMRRm  
+  
