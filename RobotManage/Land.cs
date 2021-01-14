@@ -8,7 +8,7 @@ namespace RobotManage
         private int RightCoordinate { get; set; }
         private int UpperCoordinate { get; set; }
 
-        public Dictionary<Robot, string> RobotsAndDirectionCommands = new Dictionary<Robot, string>();
+        private Dictionary<Robot, string> RobotsAndDirectionCommands = new Dictionary<Robot, string>();
 
         public Land(int xLength, int yLength)
         {
@@ -24,17 +24,15 @@ namespace RobotManage
         public void MoveRobots()
         {
             var robotIndex = 1;
-            foreach (var robotsAndDirectionCommand in RobotsAndDirectionCommands)
+            foreach (var (robot, command) in RobotsAndDirectionCommands)
             {
-                var robot = robotsAndDirectionCommand.Key;
-                var command = robotsAndDirectionCommand.Value;
                 robot.FindLastLocation(command);
                 WriteRobotCurrentDirection(robot.GetCurrentPosition(), robotIndex);
                 robotIndex++;
             }
         }
 
-        public void WriteRobotCurrentDirection(Position robotCurrentPosition, int robotIndex)
+        private void WriteRobotCurrentDirection(Position robotCurrentPosition, int robotIndex)
         {
             if (IsOnOuterSpace(robotCurrentPosition))
             {

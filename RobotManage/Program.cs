@@ -7,22 +7,21 @@ using System.Text.RegularExpressions;
 
 namespace RobotManage
 {
-    class Program
+    internal static class Program
     {
         private static string GetProjectPath()
         {
-            var exePath = Path.GetDirectoryName(System.Reflection
-                .Assembly.GetExecutingAssembly().CodeBase);
-            Regex appPathMatcher = new Regex(@"(?<!fil)[A-Za-z]:\\+[\S\s]*?(?=\\+bin)");
+            var exePath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
+            var appPathMatcher = new Regex(@"(?<!fil)[A-Za-z]:\\+[\S\s]*?(?=\\+bin)");
             var appRoot = appPathMatcher.Match(exePath ?? string.Empty).Value;
             return appRoot;
         }
 
         private static List<string> ReadInput(string path)
         {
-            FileStream fileStream = new FileStream(path, FileMode.Open);
-            using StreamReader reader = new StreamReader(fileStream);
-            String line;
+            var fileStream = new FileStream(path, FileMode.Open);
+            using var reader = new StreamReader(fileStream);
+            string line;
             var lines = new List<string>();
             while ((line = reader.ReadLine()) != null)
             {
@@ -68,7 +67,6 @@ namespace RobotManage
             }
         }
 
-
         private static bool IsOdd(int value)
         {
             return value % 2 != 0;
@@ -101,7 +99,7 @@ namespace RobotManage
                 try
                 {
                     var land = new Land(Int32.Parse(landSizes[0]), Int32.Parse(landSizes[1]));
-
+                        
                     var robotIndex = 0;
                     for (var lineIndex = 1; lineIndex < lines.Count; lineIndex += 2)
                     {
@@ -117,7 +115,16 @@ namespace RobotManage
                             throw new Exception();
                         }
 
-                        Robot robot = new Robot(CalculatePositions(positionParameters.ToList(), robotIndex));
+                        var position = CalculatePositions(positionParameters.ToList(), robotIndex);
+                        
+                        //to control positon of robot in range
+                        if (land.IsOnOuterSpace(position))
+                        {
+                            Console.WriteLine($"{robotIndex}. robot position not in range of land upper-right coordinates");
+                            throw new Exception();
+                        }
+                        
+                        var robot = new Robot(position);
 
                         ControlCommandsIsValid(directionCommand.ToCharArray(), robotIndex);
 
